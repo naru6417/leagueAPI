@@ -1,4 +1,4 @@
-const champion = require('../../models/champion.js');
+const champion = require('../models/champion.js');
 
 exports.getAllchampions = async (req, res) => {
     try {
@@ -11,7 +11,9 @@ exports.getAllchampions = async (req, res) => {
 
 exports.getchampionById = async (req, res) => {    
     try {
-        const champions = await champion.findOne({ where: { championname: req.params.championname } }); 
+        const champions = await champion.findOne({ 
+            where: { championname: req.params.championname } 
+        }); 
         if (!champions) {
             return res.status(404).json({ error: 'champion not found' });
         }
@@ -20,6 +22,21 @@ exports.getchampionById = async (req, res) => {
         res.status(500).json({ error: 'failed to fetch champion' });
     }
 };
+
+exports.deletechampion = async (req, res) => {
+    try {
+        const deleted = await champion.destroy({
+            where: { championname: req.params.championname },
+        });
+        if (!deleted) {
+            return res.status(404).json({ error: 'champion not found' });
+        }
+        res.json({ message: 'champion deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'failed to delete champion' });
+    }
+};
+
 
 exports.createchampion = async (req, res) => {
     try {
@@ -39,6 +56,7 @@ exports.updatechampion = async (req, res) => {
         const [updated] = await champion.update(req.body, {
             where: { championname: req.params.championname },
         });
+
         if (!updated) {
             return res.status(404).json({ error: 'champion not found' });
         }
@@ -51,16 +69,3 @@ exports.updatechampion = async (req, res) => {
     }
 };
 
-exports.deletechampion = async (req, res) => {
-    try {
-        const deleted = await champion.destroy({
-            where: { championname: req.params.championname },
-        });
-        if (!deleted) {
-            return res.status(404).json({ error: 'champion not found' });
-        }
-        res.json({ message: 'champion deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'failed to delete champion' });
-    }
-};
