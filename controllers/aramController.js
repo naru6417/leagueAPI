@@ -1,9 +1,10 @@
-const champion = require('../../models/champion.js');
+const champion = require('../models/champion.js');
 
 exports.getAramTeam = async (req, res) => {
 
-    const teamSize = 5;
-    const rerolls = parseInt(req.query.rerolls, 10) || 0;
+    const teamSize = parseInt(req.body.teamSize, 10) || 5;
+    const rerolls = parseInt(req.body.rerolls, 10) || 0;
+    console.log(rerolls);
     const totalPlayers = teamSize * 2;
     const totalChampions = totalPlayers * (1 + rerolls); 
 
@@ -14,6 +15,15 @@ exports.getAramTeam = async (req, res) => {
     try {
         const champions = await champion.findAll();
         const copyChampions = champions.slice();
+
+        console.log(totalPlayers);
+
+        if (totalPlayers > 10) {
+            return res.status(404).json({error: 'too many players (max size is 5)'});
+        }
+        if (rerolls*totalPlayers + totalPlayers > champions.length){
+            return res.status(404).json({ error: 'too many rerolls' });
+        } 
 
         const teams = { 
             team1: [],
@@ -29,16 +39,16 @@ exports.getAramTeam = async (req, res) => {
 
         for (let i = 0; i < totalPlayers; i++) {
             const intialChamp = copyChampions.pop();
-            const rerolls = [];
+            let rerolls_list = [];
 
-            for (let j = 0; j < rerolls - 1; j++) {
-                rerolls.push(copyChampions.pop());
+            for (let j = 0; j < rerolls; j++) {
+                rerolls_list.push(copyChampions.pop());
             }
 
             let player_obj = new Object();
             player_obj.player = i + 1;
             player_obj.first_champ = intialChamp;
-            player_obj.rerolls = rerolls;
+            player_obj.rerolls = rerolls_list;
 
             if (i%2 == 0){
                 teams.team1.push(player_obj);
@@ -47,6 +57,8 @@ exports.getAramTeam = async (req, res) => {
             }
 
         }
+
+        res.json(teams);
 
     } catch (err) {
 
