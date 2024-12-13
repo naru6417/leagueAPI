@@ -30,6 +30,22 @@ exports.getAramTeam = async (req, res) => {
         for (let i = 0; i < totalPlayers; i++) {
             const intialChamp = copyChampions.pop();
             const rerolls = [];
+
+            for (let j = 0; j < rerolls - 1; j++) {
+                rerolls.push(copyChampions.pop());
+            }
+
+            let player_obj = new Object();
+            player_obj.player = i + 1;
+            player_obj.first_champ = intialChamp;
+            player_obj.rerolls = rerolls;
+
+            if (i%2 == 0){
+                teams.team1.push(player_obj);
+            }else{
+                teams.team2.push(player_obj);
+            }
+
         }
 
     } catch (err) {
