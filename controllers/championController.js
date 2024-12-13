@@ -41,11 +41,9 @@ exports.deletechampion = async (req, res) => {
 exports.createchampion = async (req, res) => {
     try {
         const existingChampion = await champion.findByPk(req.body.championname);
-
         if (!existingChampion) {
             return res.status(409).json({ error: 'champion with this ID already exists' });
         }
-
         const newchampion = await champion.create(req.body);
         res.status(201).json(newchampion);
     } catch (err) {
@@ -62,11 +60,9 @@ exports.updatechampion = async (req, res) => {
         if (!updated) {
             return res.status(404).json({ error: 'champion not found' });
         }
-
         const updatedchampion = await champion.findOne({
             where: { championname: req.params.championname },
         });
-        
         res.json(updatedchampion);
     } catch (err) {
         res.status(400).json({ error: 'failed to update champion' });
