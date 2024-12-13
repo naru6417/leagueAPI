@@ -4,7 +4,6 @@ exports.getAramTeam = async (req, res) => {
 
     const teamSize = parseInt(req.body.teamSize, 10) || 5;
     const rerolls = parseInt(req.body.rerolls, 10) || 0;
-    console.log(rerolls);
     const totalPlayers = teamSize * 2;
     const totalChampions = totalPlayers * (1 + rerolls); 
 
@@ -15,8 +14,6 @@ exports.getAramTeam = async (req, res) => {
     try {
         const champions = await champion.findAll();
         const copyChampions = champions.slice();
-
-        console.log(totalPlayers);
 
         if (totalPlayers > 10) {
             return res.status(404).json({error: 'too many players (max size is 5)'});
