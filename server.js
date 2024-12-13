@@ -1,13 +1,15 @@
 const express = require('express');
 const sequelize = require('./config/db.js');
-const itemRoutes = require('./routes/championRoutes.js');
+const championRoutes = require('./routes/championRoutes.js');
+const aramRoutes = require('./routes/aramRoutes.js');
 const cron = require('node-cron');
 const env = require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
-app.use('/api', itemRoutes);
+app.use('/api', championRoutes);
+app.use('/api', aramRoutes);
 
 const PORT = process.env.PORT || 8000;
 
